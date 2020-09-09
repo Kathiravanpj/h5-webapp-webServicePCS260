@@ -1,14 +1,7 @@
-/**
- * Custom directives to enable certain features in the application
- */
 var h5;
 (function (h5) {
     var application;
     (function (application) {
-        /**
-         * When UI-select is used in UI Grid cell template, the drop-down won’t disappear when we click elsewhere on the page.
-         * This will fix this by wrapping the UI-Select directive in a custom directive.
-         */
         function uiSelectWrap($document, uiGridEditConstants) {
             return function link($scope, $elm, $attr) {
                 $document.on('click', docClick);

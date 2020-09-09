@@ -1,16 +1,7 @@
-/**
- * Custom filters in addition to standard angular filters to facilitate certain functionalities in the application.
- * TODO As filters are used extensively used within the application, these filters has to be keep improvise to make it GENERIC and OPTIMISED whenever possible
- */
 var h5;
 (function (h5) {
     var application;
     (function (application) {
-        /**
-         * To format the M3 date string into a standard date format
-         * @param m3DateString the M3 date string 'yyyyMMdd'
-         * @param dateFormat the date format it needs to converted eq, MM/dd/yy
-         */
         function m3Date($filter) {
             return function (m3DateString, dateFormat) {
                 if (angular.isString(m3DateString) && m3DateString.length == 8) {
@@ -29,15 +20,11 @@ var h5;
             };
         }
         application.m3Date = m3Date;
-        /**
-         * To get the rolling date difference between a M3 date string to the current date. Used by AR application.
-         * @param m3DateString the M3 date string 'yyyyMMdd'
-         */
         function rollingDate($filter) {
             return function (m3DateString) {
                 var rollingDate = "6";
                 if (angular.isString(m3DateString) && m3DateString.length == 8) {
-                    var dateString = m3DateString.substring(4, 6) + "/" + m3DateString.substring(6, 8) + "/" + m3DateString.substring(0, 4); //yyyyMMdd to MMddyyyy
+                    var dateString = m3DateString.substring(4, 6) + "/" + m3DateString.substring(6, 8) + "/" + m3DateString.substring(0, 4);
                     var time = Date.parse(dateString);
                     var date = new Date(time);
                     var currentDate = new Date();
@@ -71,14 +58,10 @@ var h5;
             };
         }
         application.rollingDate = rollingDate;
-        /**
-         * Custom filter to support filtering feature in UI Grid when the column has M3 date string as values
-         */
         function m3DateFilter($filter) {
             return function (condition, searchTerm, cellValue) {
                 var term = searchTerm.replace(/\\/g, '');
                 if (angular.isString(term) && term.length >= 8) {
-                    //greater or lesser than filter
                     var parseDate = Date.parse(term);
                     var m3DateString = $filter('date')(parseDate, "yyyyMMdd");
                     if (condition == 64) {
@@ -88,16 +71,13 @@ var h5;
                         return parseInt(cellValue) <= parseInt(m3DateString);
                     }
                 }
-                else { //contains filter
+                else {
                     return cellValue.indexOf(term.replace(/\//g, '')) != -1;
                 }
                 return false;
             };
         }
         application.m3DateFilter = m3DateFilter;
-        /**
-        * Custom filter to support filtering feature in UI Grid when the column has floating point numbers as values
-        */
         function numberStringFilter($filter) {
             return function (condition, searchTerm, cellValue) {
                 var term = searchTerm.replace(/\\\./, '.').replace(/\\\-/, '-');
@@ -109,7 +89,7 @@ var h5;
                         return parseFloat(cellValue) <= parseFloat(term);
                     }
                 }
-                else { //contains filter
+                else {
                     return cellValue.toString().indexOf(term) != -1;
                 }
                 return false;

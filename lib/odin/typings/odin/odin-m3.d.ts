@@ -928,6 +928,7 @@ declare module M3 {
         transaction?: string;
         record?: any;
         outputFields?: string[];
+        csrfToken?: string;
     }
     interface IMIResponse extends Odin.IErrorState {
         program?: string;

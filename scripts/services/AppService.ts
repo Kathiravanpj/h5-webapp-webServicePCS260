@@ -57,8 +57,9 @@ module h5.application {
         
         //getPDS001(FACI: string, PRNO: string,STRT: string): ng.IPromise<M3.IMIResponse>;
         getPDS001Sync(FACI: string, PRNO: string,STRT: string): ng.IPromise<M3.IMIResponse>;
-        getPDS001(CONO: string,DIVI: string,W1FACI: string, W1ITNO: string,W1PCDT: string, W1STRT: string, W1PCTP: string,W1RORN: string,W1VASE: string,WWCSU1: string,WWMAUM: string): ng.IPromise<M3.IMIResponse>;
-        }
+        getPDS001(CONO: string,DIVI: string,W1FACI: string, W1ITNO: string,W1PCDT: string, W1STRT: string, W1PCTP: string,W1RORN: string,W1VASE: string,WWCSU1: string,WWMAUM: string): ng.IPromise<any>;
+       exportData(queryStatement: string, removePrefix: boolean): ng.IPromise<M3.IMIResponse>;
+    }
 
     export class AppService implements IAppService {
 
@@ -67,35 +68,64 @@ module h5.application {
         constructor(private restService: h5.application.IRestService, private $filter: h5.application.AppFilter, private $q: ng.IQService) {
         }
 
-        public getAuthority(company: string, division: string, m3User: string, programName: string, charAt: number): ng.IPromise<boolean> {
-            let request = {
-                DIVI: division,
-                USID: m3User,
-                PGNM: programName
-            };
-            return this.restService.executeM3MIRestService("MDBREADMI", "SelCMNPUS30_arl", request).then((val: M3.IMIResponse) => {
-                if (angular.equals([], val.items)) {
-                    request.DIVI = "";
-                    return this.restService.executeM3MIRestService("MDBREADMI", "SelCMNPUS30_arl", request).then((val: M3.IMIResponse) => {
-                        if (angular.equals([], val.items)) {
+         public getAuthority(company: string, division: string, m3User: string, programName: string, charAt: number): ng.IPromise<boolean> {
+            let queryStatement = "KPALO from CMNPUS where KPUSID = '" + m3User + "' and KPPGNM = '" + programName + "' and KPDIVI = '" + division + "'";
+            return this.exportData(queryStatement, false).then((val: M3.IMIResponse) => {
+                if (angular.isUndefined(val.item)) {
+                    queryStatement = "KPALO from CMNPUS where KPUSID = '" + m3User + "' and KPPGNM = '" + programName + "' and KPDIVI = ''";
+                    return this.exportData(queryStatement, false).then((val: M3.IMIResponse) => {
+                        if (angular.isUndefined(val.item)) {
                             return false;
                         } else {
-                            let test = val.item.ALO;
-                            if (charAt < test.length() && '1' == test.charAt(charAt)) {
+                            let test = val.item.KPALO;
+                            if (charAt < test.length && '1' == test.charAt(charAt)) {
                                 return true;
                             } else {
                                 return false;
                             }
                         }
+                    }, (err: M3.IMIResponse) => {
+                        return false;
                     });
                 } else {
-                    let test = val.item.ALO;
-                    if (charAt < test.length() && '1' == test.charAt(charAt)) {
+                    let test = val.item.KPALO;
+                    if (charAt < test.length && '1' == test.charAt(charAt)) {
                         return true;
                     } else {
                         return false;
                     }
                 }
+            }, (err: M3.IMIResponse) => {
+                return false;
+            });
+        }
+        
+        public exportData(queryStatement: string, removePrefix: boolean): ng.IPromise<M3.IMIResponse> {
+            let requestData = {
+                SEPC: "#",
+                HDRS: "1",
+                QERY: queryStatement
+            };
+            return this.restService.executeM3MIRestService("EXPORTMI", "Select", requestData, 1000).then((val: M3.IMIResponse) => {
+                let responses = [];
+                val.items.forEach((item, index) => {
+                    if (index > 0) {
+                        let response = {};
+                        let replyField: string = item.REPL;
+                        let fields = replyField.split("#");
+                        fields.forEach((field) => {
+                            let firstIndex = field.indexOf(" ");
+                            let key = field.slice(0, firstIndex);
+                            let value = field.slice(firstIndex).trim();
+                            let newKey = removePrefix ? key.substring(2) : key;
+                            response[newKey] = value;
+                        });
+                        responses.push(response);
+                    }
+                });
+                val.items = responses;
+                val.item = responses[0];
+                return val;
             });
         }
         
@@ -396,7 +426,7 @@ module h5.application {
             return this.restService.executeM3MIRestService("PDS001MI", "Get", requestData).then((val: M3.IMIResponse) => { return val; });
         }
 
-        public getPDS001(CONO: string,DIVI: string,W1FACI: string, W1ITNO: string,W1PCDT: string, W1STRT: string, W1PCTP: string,W1RORN: string,W1VASE: string,WWCSU1: string,WWMAUM: string): ng.IPromise<M3.IMIResponse>{
+        public getPDS001(CONO: string,DIVI: string,W1FACI: string, W1ITNO: string,W1PCDT: string, W1STRT: string, W1PCTP: string,W1RORN: string,W1VASE: string,WWCSU1: string,WWMAUM: string): ng.IPromise<any>{
             let requestData = {
                 FACI: W1FACI,
                 PRNO: W1ITNO,

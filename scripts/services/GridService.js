@@ -1,11 +1,8 @@
-/**
- * Utility service to design and control UI Grids used in the application
- */
 var h5;
 (function (h5) {
     var application;
     (function (application) {
-        var GridService = /** @class */ (function () {
+        var GridService = (function () {
             function GridService($filter, $timeout, storageService, languageService) {
                 this.$filter = $filter;
                 this.$timeout = $timeout;
@@ -13,9 +10,6 @@ var h5;
                 this.languageService = languageService;
                 this.init();
             }
-            /**
-            * Initialize a Grid object with default configurations to enable/disable features
-            */
             GridService.prototype.init = function () {
                 var _this = this;
                 this.baseGrid = {
@@ -61,19 +55,9 @@ var h5;
                     data: []
                 };
             };
-            /**
-            * Get a copy of the base grid with default attributes
-            */
             GridService.prototype.getBaseGrid = function () {
                 return angular.copy(this.baseGrid);
             };
-            /**
-            * When called this function will adjust the UI Grid height based on the number of rows loaded
-            * @param gridId the grid Id
-            * @param noOfRows the number of rows in the grid
-            * @param timeDelay the time delay to initiate resizing the grid
-            * @param initialHeight the initial height to calculate the grid row(s) height, default is 150 px
-            */
             GridService.prototype.adjustGridHeight = function (gridId, noOfRows, timeDelay, initialHeight) {
                 if (initialHeight === void 0) { initialHeight = 150; }
                 noOfRows = (noOfRows < 1 ? 1 : noOfRows);
@@ -82,18 +66,10 @@ var h5;
                     angular.element(document.getElementById(gridId)).css('height', newHeight + 'px');
                 }, timeDelay);
             };
-            /**
-            * Save the current state of the UI Grid in the browser memory
-            * @param gridId the grid Id
-            */
             GridService.prototype.saveGridState = function (gridId, gridApi) {
                 var gridState = gridApi.saveState.save();
                 this.storageService.setLocalData('h5.app.appName.gridState.' + gridId, gridState);
             };
-            /**
-            * Restore the last saved state of the UI Grid
-            * @param gridId the grid Id
-            */
             GridService.prototype.restoreGridState = function (gridId, gridApi) {
                 var gridState = this.storageService.getLocalData('h5.app.appName.gridState.' + gridId);
                 if (gridState) {
@@ -143,7 +119,6 @@ var h5;
             GridService.prototype.getErrorListGrid = function () {
                 var ErrorListGrid = angular.copy(this.baseGrid);
                 ErrorListGrid.saveSelection = true;
-                //   }
                 ErrorListGrid.columnDefs = [
                     { name: "PRNO", displayName: this.languageService.languageConstants.get('ITNO') },
                     { name: "FACI", displayName: this.languageService.languageConstants.get('FACI') },

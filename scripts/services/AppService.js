@@ -1,11 +1,8 @@
-/**
- * Service class to implement functions to retrieve, push data via Rest API with generic business logics if required. Will be used by the controller.
- */
 var h5;
 (function (h5) {
     var application;
     (function (application) {
-        var AppService = /** @class */ (function () {
+        var AppService = (function () {
             function AppService(restService, $filter, $q) {
                 this.restService = restService;
                 this.$filter = $filter;
@@ -13,38 +10,66 @@ var h5;
             }
             AppService.prototype.getAuthority = function (company, division, m3User, programName, charAt) {
                 var _this = this;
-                var request = {
-                    DIVI: division,
-                    USID: m3User,
-                    PGNM: programName
-                };
-                return this.restService.executeM3MIRestService("MDBREADMI", "SelCMNPUS30_arl", request).then(function (val) {
-                    if (angular.equals([], val.items)) {
-                        request.DIVI = "";
-                        return _this.restService.executeM3MIRestService("MDBREADMI", "SelCMNPUS30_arl", request).then(function (val) {
-                            if (angular.equals([], val.items)) {
+                var queryStatement = "KPALO from CMNPUS where KPUSID = '" + m3User + "' and KPPGNM = '" + programName + "' and KPDIVI = '" + division + "'";
+                return this.exportData(queryStatement, false).then(function (val) {
+                    if (angular.isUndefined(val.item)) {
+                        queryStatement = "KPALO from CMNPUS where KPUSID = '" + m3User + "' and KPPGNM = '" + programName + "' and KPDIVI = ''";
+                        return _this.exportData(queryStatement, false).then(function (val) {
+                            if (angular.isUndefined(val.item)) {
                                 return false;
                             }
                             else {
-                                var test = val.item.ALO;
-                                if (charAt < test.length() && '1' == test.charAt(charAt)) {
+                                var test = val.item.KPALO;
+                                if (charAt < test.length && '1' == test.charAt(charAt)) {
                                     return true;
                                 }
                                 else {
                                     return false;
                                 }
                             }
+                        }, function (err) {
+                            return false;
                         });
                     }
                     else {
-                        var test = val.item.ALO;
-                        if (charAt < test.length() && '1' == test.charAt(charAt)) {
+                        var test = val.item.KPALO;
+                        if (charAt < test.length && '1' == test.charAt(charAt)) {
                             return true;
                         }
                         else {
                             return false;
                         }
                     }
+                }, function (err) {
+                    return false;
+                });
+            };
+            AppService.prototype.exportData = function (queryStatement, removePrefix) {
+                var requestData = {
+                    SEPC: "#",
+                    HDRS: "1",
+                    QERY: queryStatement
+                };
+                return this.restService.executeM3MIRestService("EXPORTMI", "Select", requestData, 1000).then(function (val) {
+                    var responses = [];
+                    val.items.forEach(function (item, index) {
+                        if (index > 0) {
+                            var response_1 = {};
+                            var replyField = item.REPL;
+                            var fields = replyField.split("#");
+                            fields.forEach(function (field) {
+                                var firstIndex = field.indexOf(" ");
+                                var key = field.slice(0, firstIndex);
+                                var value = field.slice(firstIndex).trim();
+                                var newKey = removePrefix ? key.substring(2) : key;
+                                response_1[newKey] = value;
+                            });
+                            responses.push(response_1);
+                        }
+                    });
+                    val.items = responses;
+                    val.item = responses[0];
+                    return val;
                 });
             };
             AppService.prototype.AddProductGroup = function (ITCL, TX40, TX15, SECU, CONF) {

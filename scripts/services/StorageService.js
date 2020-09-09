@@ -2,7 +2,7 @@ var h5;
 (function (h5) {
     var application;
     (function (application) {
-        var StorageService = /** @class */ (function () {
+        var StorageService = (function () {
             function StorageService(odinStorageService) {
                 this.odinStorageService = odinStorageService;
             }

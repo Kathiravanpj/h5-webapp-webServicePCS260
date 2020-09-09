@@ -1,28 +1,16 @@
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-/**
- * Initialize the app and register the components on which it depends, the components are containers for the various parts of an application,
- *  such as modules, controllers , services, directives etc
- */
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var h5;
 (function (h5) {
     var application;
     (function (application) {
-        var App = /** @class */ (function (_super) {
+        var App = (function (_super) {
             __extends(App, _super);
             function App() {
-                return _super !== null && _super.apply(this, arguments) || this;
+                _super.apply(this, arguments);
             }
             App.prototype.onStart = function () {
                 this.name = "H5 Application";
@@ -43,7 +31,6 @@ var h5;
                 this.module.filter("m3Date", ["$filter", application.m3Date]).filter("rollingDate", ["$filter", application.rollingDate]).filter("m3DateFilter", ["$filter", application.m3DateFilter]).filter("numberStrFilter", ["$filter", application.numberStringFilter]);
                 this.module.directive("uiSelectWrap", ["$document", "uiGridEditConstants", application.uiSelectWrap]);
                 this.module.controller("AppController", application.AppController);
-                //Disabling angular debug on production to boost the performance
                 this.module.config(['$compileProvider', function ($compileProvider) {
                         $compileProvider.debugInfoEnabled(false);
                     }]);
@@ -53,8 +40,6 @@ var h5;
                             requireBase: false
                         });
                     }]);
-                // Set the log level to debug during development
-                //Odin.Log.setDebug();
             };
             return App;
         }(M3.ApplicationBase));

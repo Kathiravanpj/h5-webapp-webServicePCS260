@@ -2,7 +2,7 @@ var h5;
 (function (h5) {
     var application;
     (function (application) {
-        var ConfigService = /** @class */ (function () {
+        var ConfigService = (function () {
             function ConfigService($http, $q) {
                 this.$http = $http;
                 this.$q = $q;

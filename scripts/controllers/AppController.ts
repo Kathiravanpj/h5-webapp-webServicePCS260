@@ -677,7 +677,7 @@ module h5.application {
             let globalConfig = this.scope.globalConfig;
 
             this.loadAppConfig(userContext.company, userContext.division, userContext.m3User, globalConfig.environment).then((val: any) => {
-                 console.log("GINloadGlobalData");
+                 //console.log("GINloadGlobalData");
                 this.refreshTransactionStatus();
                 this.loadDefaultFields();
                 this.hideWarning();
@@ -748,7 +748,7 @@ module h5.application {
         * @param moduleId the selected module id
         */
         private moduleSelected(moduleId: number) {
-             this.scope.transactions.ErrorListGrid.data = [];
+            // this.scope.transactions.ErrorListGrid.data = [];
             this.scope.activeModule = moduleId;
             this.scope.modules.forEach((appmodule) => {
                 if (angular.equals(moduleId, appmodule.moduleId)) {
@@ -858,7 +858,7 @@ module h5.application {
                 });
                 let promises = [promise1];
                 this.$q.all(promises).finally(() => {
-                    console.log("G loadAppConfig");
+                   // console.log("G loadAppConfig");
                     deferred.resolve(this.scope.appConfig);
                     this.scope.transactionStatus.appConfig = false;
                     this.refreshTransactionStatus();
@@ -916,7 +916,7 @@ module h5.application {
            this.scope.webService.ErrorListGrid.data = [];
 
            let asyncflag = this.scope.webService.manualInput;
-           console.log("G asyncflag--"+asyncflag);
+           //console.log("G asyncflag--"+asyncflag);
            if(asyncflag){
             this.executeAsynchronous("", "", 0, inputRecords, 10,0);
            }else{
@@ -963,7 +963,7 @@ module h5.application {
          */
         private executeLines(inputRecords: any,itemIndex: number)   {
             //console.log("G TEST Running");
-            var _this = this;
+            //var _this = this;
             let nextItem = itemIndex;
             let inputRecord = inputRecords[itemIndex];
             //let requestData = angular.copy(inputRecord); 
@@ -1367,7 +1367,7 @@ module h5.application {
         //     return false; 
         //      }
         //          });
-                  console.log("G strXml---"+strXml);
+                  //console.log("G strXml---"+strXml);
         //          console.log("G currentRecord---"+JSON.stringify(currentRecord));
         this.executeAsynchronouslyXMLHttp(strXml,record).then((response: any) => {
         });
@@ -1378,7 +1378,7 @@ module h5.application {
         });
 
     this.$q.all(promises).finally(() => {
-        console.log("G deferred.resolve()---");
+       // console.log("G deferred.resolve()---");
         deferred.resolve();
         this.scope.webService.transactionStatus.executeTransactions = false;
         this.refreshTransactionStatus();
@@ -1402,7 +1402,7 @@ private executeAsynchronouslyXMLHttp(strXml: any,inputRecords:any): ng.IPromise<
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.open('POST', 'https://m3prduse1.m3.inforcloudsuite.com/ips/service/PCS_Load', true);
         xmlhttp.onreadystatechange = function () {
-        console.log("G outside record---"+inputRecord.W1ITNO +"-"+ xmlhttp.readyState + "-" + xmlhttp.status);
+        //console.log("G outside record---"+inputRecord.W1ITNO +"-"+ xmlhttp.readyState + "-" + xmlhttp.status);
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             //console.log("G SUCCESS record---"+inputRecord.W1ITNO);
         //inputRecord.forEach((gridData,index) => {

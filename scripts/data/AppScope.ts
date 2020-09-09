@@ -93,5 +93,6 @@ module h5.application {
         };
         webService: IWebService;
         globalSelection: IGlobalSelection;
+        
     }
 }

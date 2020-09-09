@@ -1,11 +1,8 @@
-/**
- * Utility service to load the localization file 'translation.json' for the selected language in the application
- */
 var h5;
 (function (h5) {
     var application;
     (function (application) {
-        var LanguageService = /** @class */ (function () {
+        var LanguageService = (function () {
             function LanguageService(odinLanguageService) {
                 this.odinLanguageService = odinLanguageService;
             }

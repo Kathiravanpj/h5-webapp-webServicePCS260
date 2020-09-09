@@ -12,12 +12,17 @@ module h5.application {
             password: string;
             client_id: string;
             client_secret: string;
+            access_token_url: string;
+            useSessionOAuth: boolean;
+            sessionOAuthURL: string;
         };
         inforIDMAPI: {
             URL: string;
         };
         inforM3API: {
             URL: string;
+            useIONAPIInsteadOfOdinMI: boolean;
+            enableCSRFToken: boolean;
         };
         companyId: string;
         apiKey: string;
